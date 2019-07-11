@@ -1,6 +1,6 @@
-## Vagrant Multiple-VM Creation and Configuration
+## Vagrant Multiple-VM Creation: Puppet Master server with PXE/DHCP onboard, 2 VMs on CentOs7 and 1 PXE VM
 Automatically provision multiple VMs with Vagrant and VirtualBox. Automatically install, configure, and test
-Puppet Master and Puppet Agents on those VMs. All instructions can be found in my blog post:
+Puppet Master and Puppet Agents on those VMs.
 
 
 #### JSON Configuration File
@@ -11,27 +11,10 @@ configuration files for alternate environments since the Vagrantfile is designed
 
 #### Instructions
 ```
-vagrant up # brings up all VMs
-vagrant ssh puppet.example.com
+vagrant up puppet.example.com # brings up puppet master
+```
+Type in password when asked. This password decrypts deploy key from private repository
 
-sudo service puppetmaster status # test that puppet master was installed
-sudo service puppetmaster stop
-sudo puppet master --verbose --no-daemonize
-# Ctrl+C to kill puppet master
-sudo service puppetmaster start
-sudo puppet cert list --all # check for 'puppet' cert
-
-# Shift+Ctrl+T # new tab on host
-vagrant ssh node01.example.com # ssh into agent node
-sudo service puppet status # test that agent was installed
-sudo puppet agent --test --waitforcert=60 # initiate certificate signing request (CSR)
-```
-Back on the Puppet Master server (puppet.example.com)
-```
-sudo puppet cert list # should see 'node01.example.com' cert waiting for signature
-sudo puppet cert sign --all # sign the agent node(s) cert(s)
-sudo puppet cert list --all # check for signed cert(s)
-```
 #### Forwarding Ports
 Used by Vagrant and VirtualBox. To create additional forwarding ports, add them to the 'ports' array. For example:
  ```
@@ -48,6 +31,16 @@ Used by Vagrant and VirtualBox. To create additional forwarding ports, add them 
         }
       ]
 ```
+### Boot option PXE
+Used to install PXE requiring vm
+ ```
+ ":boot" : "network"
+ ```
+### Require password for any reason
+ ```
+ ":askpass" : "true"
+ ```
+
 #### Useful Multi-VM Commands
 The use of the specific <machine> name is optional.
 * `vagrant up <machine>`
@@ -59,4 +52,3 @@ The use of the specific <machine> name is optional.
 * `facter`
 * `sudo tail -50 /var/log/syslog`
 * `sudo tail -50 /var/log/puppet/masterhttp.log`
-* `tail -50 ~/VirtualBox\ VMs/postblog/<machine>/Logs/VBox.log'
