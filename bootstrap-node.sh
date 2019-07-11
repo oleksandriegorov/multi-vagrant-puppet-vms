@@ -7,7 +7,7 @@ then
     echo "Puppet Agent is already installed. Moving on..."
 else
     # Install Puppet Master
-	yum install -y  https://yum.puppetlabs.com/puppet-release-el-7.noarch.rpm
+	yum install -y https://yum.puppet.com/puppet5-release-el-7.noarch.rpm
 	yum install -y puppet-agent
 fi
 
