@@ -12,12 +12,15 @@
       ":memory": 1024,
       ":bootstrap": "bootstrap-node.sh"
     },
-    "node03.example.com": {
-	  ":boot": "network",
+    "node02.example.com": {
       ":ip": "10.14.14.12",
       "ports": [],
       ":memory": 1024,
       ":bootstrap": "bootstrap-node.sh"
+    },
+    "node03.example.com": {
+	  ":boot": "network",
+      ":memory": 1024
     }
   }
 }
