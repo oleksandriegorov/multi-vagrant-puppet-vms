@@ -27,4 +27,6 @@ else
 
     # symlink manifest from Vagrant synced folder location
     ln -sf /vagrant/site.pp /etc/puppetlabs/code/environments/production/manifests/site.pp
+	systemctl enable puppetserver --now
 fi
+systemctl enable puppet --now
