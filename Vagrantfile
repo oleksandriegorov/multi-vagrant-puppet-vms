@@ -30,7 +30,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.customize ["modifyvm", :id, "--name", node_name]
       end
 
+
       config.vm.hostname = node_name
+	  # No need for provisioner if it is PXE boot
       if node_values[':boot'] == 'network' then
         config.vm.network :private_network, type: "dhcp", auto_config: false
 		config.vm.box = "jtyr/pxe"
@@ -38,7 +40,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		config.vm.boot_timeout = 1
       else
         config.vm.network :private_network, ip: node_values[':ip']
-        config.vm.provision :shell, :path => node_values[':bootstrap']
+		# Puppet server has some private files; use your password
+        if node_values[':askpass'] == 'true' then
+          print "Enter password you have got from your mate to decrypt some secret files: "
+  	      password = STDIN.noecho(&:gets).chomp
+	      print "\n"
+          config.vm.provision :shell, :path => node_values[':bootstrap'], :args => [password]
+        # if this is not Puppet server - do not ask password
+        else
+		  config.vm.provision :shell, :path => node_values[':bootstrap']
+		end
       end
 
     end

@@ -4,7 +4,8 @@
       ":ip": "10.14.14.10",
       "ports": [],
       ":memory": 3096,
-      ":bootstrap": "bootstrap-master.sh"
+      ":bootstrap": "bootstrap-master.sh",
+	  ":askpass": "true"
     },
     "node01.example.com": {
       ":ip": "10.14.14.11",

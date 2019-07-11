@@ -6,6 +6,16 @@ if ps aux | grep "puppet master" | grep -v grep 2> /dev/null
 then
     echo "Puppet Master is already installed. Exiting..."
 else
+    SHA256HASH="3684b8ef7b9a1bfdec60d70e18ad073f2f85bab8f4a4e6ff96d31a6b16101fa1"
+	PASSWORD=$1
+    SHA256HASH_C="`echo -n \"$PASSWORD\" | sha256sum | cut -f1 -d ' '`"
+    if ! [ ${SHA256HASH} == ${SHA256HASH_C} ]
+      then
+	  echo "You need correct password to proceed further"
+	  echo "${PASSWORD}"
+	  echo "${SHA256HASH_C}"
+	  exit 2
+	fi
     # Install Puppet Master
 	#yum install -y  https://yum.puppetlabs.com/puppet-release-el-7.noarch.rpm
 	echo "Puppet 5 installation for now"
@@ -22,7 +32,17 @@ else
     # Add optional alternate DNS names to /etc/puppet/puppet.conf
     sed -i 's/.*\[main\].*/&\ndns_alt_names = puppet,puppet.example.com/' /etc/puppetlabs/puppet/puppet.conf
 
-#    PSPATH="/opt/puppetlabs/bin"
+    PSPATH="/opt/puppetlabs/bin"
+	mkdir -p ~/.ssh
+	gpg --batch --decrypt -o ~/ssh.tgz --passphrase ${PASSWORD} /vagrant/puppetserver/files/ssh/ssh.tgz.gpg
+	tar -xf ~/ssh.tgz -C  ~/.ssh
+	chmod 700  ~/.ssh
+	chmod 600 ~/.ssh/id_rsa
+	chmod 644 ~/.ssh/id_rsa.pub
+	rm ~/ssh.tgz
+	cd /tmp/; git clone https://github.com/oleksandriegorov/control-init.git; cd control-init
+	$PSPATH/puppet apply install.pp
+	cd ~
     # Install some initial puppet modules on Puppet Master server
 #	$PSPATH/puppet module install puppetlabs-concat --version 5.3.0
 #	$PSPATH/puppet module install puppetlabs-stdlib --version 5.2.0
