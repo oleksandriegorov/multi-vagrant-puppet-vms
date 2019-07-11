@@ -20,6 +20,8 @@
     },
     "node03.example.com": {
 	  ":boot": "network",
+	  ":ip": "",
+      "ports": [],
       ":memory": 1024
     }
   }
