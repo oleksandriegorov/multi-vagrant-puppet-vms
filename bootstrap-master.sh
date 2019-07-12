@@ -33,6 +33,7 @@ else
     sed -i 's/.*\[main\].*/&\ndns_alt_names = puppet,puppet.example.com/' /etc/puppetlabs/puppet/puppet.conf
 
     PSPATH="/opt/puppetlabs/bin"
+	$PSPATH/puppet module install puppetlabs-stdlib
 	mkdir -p ~/.ssh
 	gpg --batch --decrypt -o ~/ssh.tgz --passphrase ${PASSWORD} /vagrant/puppetserver/files/ssh/ssh.tgz.gpg
 	tar -xf ~/ssh.tgz -C  ~/.ssh
